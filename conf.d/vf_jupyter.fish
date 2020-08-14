@@ -49,6 +49,6 @@ function __vf_unregister_jupyter --on-event virtualenv_will_remove --description
     
     if jupyter kernelspec list | grep "$kernel_name " > /dev/null 2>&1
         echo "Unregistering Jupyter kernel $kernel_name"
-        yes | jupyter kernelspec uninstall $kernel_name > /dev/null 2>&1
+        echo y | jupyter kernelspec uninstall $kernel_name > /dev/null 2>&1
     end
 end
