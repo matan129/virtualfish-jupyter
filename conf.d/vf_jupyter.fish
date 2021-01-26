@@ -21,8 +21,25 @@ function __vf_register_jupyter --description "Register Jupyter kernel"
     python -m ipykernel install --user --name (__vfcustom_kernel_name) --display-name "$python_version ($virtualenv_name)"
 end
 
+function __vfcustom_setup_event_handlers --on-event virtualenv_will_remove
+    set i 0
+    for venv in (vf ls)
+        eval "function __vfcustom_temp_unregister_$i --on-event 'virtualenv_will_remove:$venv'
+            __vf_unregister_jupyter $venv
+        end
+        "
+        set i (math $i + 1)
+    end
+end
 
-function __vf_unregister_jupyter --on-event virtualenv_will_remove --description "Unregister Jupyter kernel"
+function __vfcustom_destroy_event_handlers --on-event virtualenv_did_remove
+    for f in (functions --all | grep __vfcustom_temp_unregister_)
+        functions -e $f
+    end
+end
+
+
+function __vf_unregister_jupyter --description "Unregister Jupyter kernel"
     set -l venv ""
     if test -z "$argv[1]"
         if test -z "$VIRTUAL_ENV"
