@@ -12,7 +12,7 @@ function __vf_register_jupyter --description "Register Jupyter kernel"
     end
 
     set -l virtualenv_name (basename $VIRTUAL_ENV)
-    set -l python_version (python --version)
+    set -l python_version (python --version 2>&1)
     
     if not pip show ipykernel > /dev/null 2>&1
         pip install ipykernel
